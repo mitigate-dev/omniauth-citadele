@@ -4,7 +4,7 @@ Omniauth strategy for using Citadele as an authentication service provider.
 
 [![Build Status](https://travis-ci.org/mak-it/omniauth-citadele.svg?branch=master)](https://travis-ci.org/mak-it/omniauth-citadele)
 
-Supported Ruby versions: 2.2+
+Supported Ruby versions: 2.3+
 
 ## Related projects
 
