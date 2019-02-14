@@ -1,0 +1,5 @@
+en:
+  omniauth:
+    citadele:
+      please_wait: Please wait...
+      click_here_if_not_redirected: Click here, if not redirected automatically

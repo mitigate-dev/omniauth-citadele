@@ -1,0 +1,5 @@
+lv:
+  omniauth:
+    citadele:
+      please_wait: Lūdzu uzgaidiet...
+      click_here_if_not_redirected: Spiediet šeit, ja pāradresācija nenotiek automātiski
