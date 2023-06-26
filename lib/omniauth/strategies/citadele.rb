@@ -13,6 +13,14 @@ module OmniAuth
       AUTH_REQUEST = 'AUTHREQ'
       AUTH_VERSION = '5.0'
 
+      def self.render_nonce?
+         defined?(ActionDispatch::ContentSecurityPolicy::Request) != nil
+      end
+      if render_nonce?
+        include ActionDispatch::ContentSecurityPolicy::Request
+        delegate :get_header, :set_header, to: :request
+      end
+
       args [:private_key, :private_crt, :public_crt, :from]
 
       option :private_key, nil
@@ -181,8 +189,13 @@ module OmniAuth
           form.html "<input type=\"hidden\" name=\"authenticity_token\" value=\"#{escape(csrf)}\" />"
         end
 
+        nonce_attribute = nil
+        if self.class.render_nonce?
+          nonce_attribute = " nonce='#{escape(content_security_policy_nonce)}'"
+        end
+
         form.instance_variable_set('@html',
-          form.to_html.gsub('</form>', '</form><script type="text/javascript">document.forms[0].submit();</script>'))
+          form.to_html.gsub('</form>', "</form><script type=\"text/javascript\"#{nonce_attribute}>document.forms[0].submit();</script>"))
         form.to_response
       end
 
