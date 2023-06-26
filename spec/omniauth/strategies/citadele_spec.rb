@@ -59,7 +59,7 @@ describe OmniAuth::Strategies::Citadele do
       expect(sent_values[:request]).to eq 'AUTHREQ'
       expect(sent_values[:request_uid]).to eq request_uid
       expect(sent_values[:version]).to eq '5.0'
-      expect(sent_values[:language]).to eq 'LV'
+      expect(sent_values[:language]).to eq 'EN'
       expect(sent_values[:return_url]).to eq 'http://example.org/auth/citadele/callback'
       expect(sent_values[:x509_subject_name]).to eq x509_subject_name
       expect(sent_values[:x509_certificate]).to eq x509_certificate

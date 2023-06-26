@@ -166,13 +166,15 @@ module OmniAuth
         x509_subject_name = private_crt.subject.to_s
         x509_certificate = private_crt.to_s.gsub(/[-]{5}(BEGIN|END).*?[-]{5}/, '').gsub('\n', '')
 
+        set_locale_from_query_param
+
         request_data = {
           timestamp: timestamp, # '20170905175959000'
           from: options.from,
           request: AUTH_REQUEST,
           request_uid: request_uid, # '7387bf5b-fa27-4fdd-add6-a6bfb2599f77'
           version: AUTH_VERSION,
-          language: 'LV',
+          language: resolve_bank_ui_language,
           return_url: callback_url,
           x509_subject_name: x509_subject_name,
           x509_certificate: x509_certificate
@@ -183,11 +185,6 @@ module OmniAuth
         form = OmniAuth::Form.new(title: I18n.t('omniauth.citadele.please_wait'), url: options.site)
         form.html "<input id=\"xmldata\" name=\"xmldata\" type=\"hidden\" value=\"#{field_value}\" />"
         form.button I18n.t('omniauth.citadele.click_here_if_not_redirected')
-
-        csrf = request.env['rack.session']['csrf']
-        unless csrf.nil?
-          form.html "<input type=\"hidden\" name=\"authenticity_token\" value=\"#{escape(csrf)}\" />"
-        end
 
         nonce_attribute = nil
         if self.class.render_nonce?
@@ -200,6 +197,23 @@ module OmniAuth
       end
 
       private
+
+      def set_locale_from_query_param
+        locale = request.params['locale']
+        if (locale != nil && locale.strip != '' && I18n.locale_available?(locale))
+          I18n.locale = locale
+        end
+      end
+
+      def resolve_bank_ui_language
+        case I18n.locale
+        when :ru then 'RU'
+        when :en then 'EN'
+        when :et then 'ET'
+        when :lt then 'LT'
+        else 'LV'
+        end
+      end
 
       def escape(html_attribute_value)
          CGI.escapeHTML(html_attribute_value) unless html_attribute_value.nil?
