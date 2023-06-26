@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'rack-protection'
 
 describe OmniAuth::Strategies::Citadele do
   PRIVATE_KEY = File.read(File.join(RSpec.configuration.cert_folder, 'request.key'))
@@ -11,6 +12,8 @@ describe OmniAuth::Strategies::Citadele do
     b.run lambda{|env| [404, {}, ['Not Found']]}
   end.to_app }
 
+  let(:token){ Rack::Protection::AuthenticityToken.random_token }
+
   let(:last_response_xmldata) { last_response.body.match(/name="xmldata" type="hidden" value="([^"]*)"/)[1] }
 
   context 'request phase' do
@@ -18,20 +21,20 @@ describe OmniAuth::Strategies::Citadele do
     let!(:request_uid) { '7387bf5b-fa27-4fdd-add6-a6bfb2599f77' }
 
     it 'displays a single form' do
-      get '/auth/citadele'
+      post_to_request_phase_path
       expect(last_response.status).to eq(200)
       expect(last_response.body.scan('<form').size).to eq(1)
     end
 
     it 'has JavaScript code to submit the form after it is created' do
-      get '/auth/citadele'
+      post_to_request_phase_path
       expect(last_response.body).to be_include('</form><script type="text/javascript">document.forms[0].submit();</script>')
     end
 
     it 'has hidden input field xmldata with required data' do
       allow_any_instance_of(OmniAuth::Strategies::Citadele).to receive(:timestamp).and_return(timestamp)
       allow_any_instance_of(OmniAuth::Strategies::Citadele).to receive(:request_uid).and_return(request_uid)
-      get '/auth/citadele'
+      post_to_request_phase_path
 
       priv_key = OpenSSL::PKey::RSA.new(PRIVATE_KEY)
       priv_crt = OpenSSL::X509::Certificate.new(PRIVATE_CRT)
@@ -65,7 +68,7 @@ describe OmniAuth::Strategies::Citadele do
     it 'xmldata has a correct signature' do
       allow_any_instance_of(OmniAuth::Strategies::Citadele).to receive(:timestamp).and_return(timestamp)
       allow_any_instance_of(OmniAuth::Strategies::Citadele).to receive(:request_uid).and_return(request_uid)
-      get '/auth/citadele'
+      post_to_request_phase_path
 
       signed_xml = <<~XML
         #{last_response_xmldata.gsub('&quot;','"')}
@@ -77,7 +80,7 @@ describe OmniAuth::Strategies::Citadele do
 
     context 'with default options' do
       it 'has the default action tag value' do
-        get '/auth/citadele'
+        post_to_request_phase_path
         expect(last_response.body).to be_include("action='https://online.citadele.lv/amai/start.htm'")
       end
     end
@@ -91,7 +94,7 @@ describe OmniAuth::Strategies::Citadele do
       end.to_app }
 
       it 'has the custom action tag value' do
-        get '/auth/citadele'
+        post_to_request_phase_path
         expect(last_response.body).to be_include("action='https://test.lv/banklink'")
       end
     end
@@ -104,7 +107,7 @@ describe OmniAuth::Strategies::Citadele do
       end.to_app }
 
       it 'redirects to /auth/failure with appropriate query params' do
-        get '/auth/citadele'
+        post_to_request_phase_path
         expect(last_response.status).to eq(302)
         expect(last_response.headers['Location']).to eq('/auth/failure?message=private_key_load_err&strategy=citadele')
       end
@@ -118,10 +121,19 @@ describe OmniAuth::Strategies::Citadele do
       end.to_app }
 
       it 'redirects to /auth/failure with appropriate query params' do
-        get '/auth/citadele'
+        post_to_request_phase_path
         expect(last_response.status).to eq(302)
         expect(last_response.headers['Location']).to eq('/auth/failure?message=private_crt_load_err&strategy=citadele')
       end
+    end
+
+    def post_to_request_phase_path
+      post(
+        '/auth/citadele',
+        {},
+        'rack.session' => {csrf: token},
+        'HTTP_X_CSRF_TOKEN' => token
+      )
     end
   end
 

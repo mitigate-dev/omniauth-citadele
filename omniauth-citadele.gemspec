@@ -6,11 +6,11 @@ require 'omniauth/citadele/version'
 Gem::Specification.new do |spec|
   spec.name          = 'omniauth-citadele'
   spec.version       = Omniauth::Citadele::VERSION
-  spec.authors       = ['MAK IT']
-  spec.email         = ['admin@makit.lv' ]
+  spec.authors       = ['Mitigate']
+  spec.email         = ['admin@mitigate.dev' ]
   spec.description   = %q{OmniAuth strategy for Citadele Banklink}
   spec.summary       = %q{OmniAuth strategy for Citadele Banklink}
-  spec.homepage      = 'https://github.com/mak-it/omniauth-citadele'
+  spec.homepage      = 'https://github.com/mitigate-dev/omniauth-citadele'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
@@ -20,9 +20,10 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.3.0'
 
-  spec.add_runtime_dependency 'omniauth', '~> 1.0'
+  spec.add_runtime_dependency 'omniauth', '~> 2.1'
   spec.add_runtime_dependency 'i18n'
 
+  spec.add_development_dependency 'rack', '~> 2.0'
   spec.add_development_dependency 'rack-test'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'bundler'

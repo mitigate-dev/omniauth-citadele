@@ -176,9 +176,20 @@ module OmniAuth
         form.html "<input id=\"xmldata\" name=\"xmldata\" type=\"hidden\" value=\"#{field_value}\" />"
         form.button I18n.t('omniauth.citadele.click_here_if_not_redirected')
 
+        csrf = request.env['rack.session']['csrf']
+        unless csrf.nil?
+          form.html "<input type=\"hidden\" name=\"authenticity_token\" value=\"#{escape(csrf)}\" />"
+        end
+
         form.instance_variable_set('@html',
           form.to_html.gsub('</form>', '</form><script type="text/javascript">document.forms[0].submit();</script>'))
         form.to_response
+      end
+
+      private
+
+      def escape(html_attribute_value)
+         CGI.escapeHTML(html_attribute_value) unless html_attribute_value.nil?
       end
     end
   end

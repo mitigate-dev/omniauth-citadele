@@ -1,4 +1,4 @@
-Copyright (c) 2017 MAK IT, Jānis Kiršteins
+Copyright (c) 2017 Mitigate, Jānis Kiršteins
 
 MIT License
 
