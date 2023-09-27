@@ -2,22 +2,22 @@
 
 Omniauth strategy for using Citadele as an authentication service provider.
 
-[![Build Status](https://travis-ci.org/mak-it/omniauth-citadele.svg?branch=master)](https://travis-ci.org/mak-it/omniauth-citadele)
+[![Build Status](https://travis-ci.org/mitigate-dev/omniauth-citadele.svg?branch=master)](https://travis-ci.org/mitigate-dev/omniauth-citadele)
 
 Supported Ruby versions: 2.3+
 
 ## Related projects
 
-- [omniauth-dnb](https://github.com/mak-it/omniauth-dnb) - strategy for authenticating with DNB
-- [omniauth-nordea](https://github.com/mak-it/omniauth-nordea) - strategy for authenticating with Nordea
-- [omniauth-seb-elink](https://github.com/mak-it/omniauth-seb-elink) - strategy for authenticating with SEB
-- [omniauth-swedbank](https://github.com/mak-it/omniauth-swedbank) - strategy for authenticating with Swedbank
-
+- [omniauth-dnb](https://github.com/mitigate-dev/omniauth-dnb) - strategy for authenticating with DNB
+- [omniauth-nordea](https://github.com/mitigate-dev/omniauth-nordea) - strategy for authenticating with Nordea
+- [omniauth-seb-elink](https://github.com/mitigate-dev/omniauth-seb-elink) - strategy for authenticating with SEB
+- [omniauth-swedbank](https://github.com/mitigate-dev/omniauth-swedbank) - strategy for authenticating with Swedbank
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add these lines to your application's Gemfile (omniauth-rails_csrf_protection is required if using Rails):
 
+    gem 'omniauth-rails_csrf_protection'
     gem 'omniauth-citadele'
 
 And then execute:
@@ -26,7 +26,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install omniauth-citadele
+    $ gem install omniauth-rails_csrf_protection omniauth-citadele
 
 ## Usage
 
