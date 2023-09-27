@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'rack-protection'
+require 'rack/session'
 
 describe OmniAuth::Strategies::Citadele do
   PRIVATE_KEY = File.read(File.join(RSpec.configuration.cert_folder, 'request.key'))
@@ -7,7 +8,7 @@ describe OmniAuth::Strategies::Citadele do
   PUBLIC_CRT = File.read(File.join(RSpec.configuration.cert_folder, 'response.crt'))
 
   let(:app){ Rack::Builder.new do |b|
-    b.use Rack::Session::Cookie, {secret: 'abc123'}
+    b.use Rack::Session::Cookie, {secret: '5242e6bd9daf0e9645c2d4e22b11ba8cee0bed44439906d5f1bd5dad409d8637'}
     b.use(OmniAuth::Strategies::Citadele, PRIVATE_KEY, PRIVATE_CRT, PUBLIC_CRT, 'MY_FROM')
     b.run lambda{|env| [404, {}, ['Not Found']]}
   end.to_app }
@@ -87,7 +88,7 @@ describe OmniAuth::Strategies::Citadele do
 
     context 'with custom options' do
       let(:app){ Rack::Builder.new do |b|
-        b.use Rack::Session::Cookie, {secret: 'abc123'}
+        b.use Rack::Session::Cookie, {secret: '5242e6bd9daf0e9645c2d4e22b11ba8cee0bed44439906d5f1bd5dad409d8637'}
         b.use(OmniAuth::Strategies::Citadele, PRIVATE_KEY, PRIVATE_CRT, PUBLIC_CRT, 'MY_FROM',
           site: 'https://test.lv/banklink')
         b.run lambda{|env| [404, {}, ['Not Found']]}
@@ -101,7 +102,7 @@ describe OmniAuth::Strategies::Citadele do
 
     context 'with non-existant private key file' do
       let(:app){ Rack::Builder.new do |b|
-        b.use Rack::Session::Cookie, {secret: 'abc123'}
+        b.use Rack::Session::Cookie, {secret: '5242e6bd9daf0e9645c2d4e22b11ba8cee0bed44439906d5f1bd5dad409d8637'}
         b.use(OmniAuth::Strategies::Citadele, 'missing-private-key-file.pem', PRIVATE_CRT, PUBLIC_CRT, 'MY_FROM')
         b.run lambda{|env| [404, {}, ['Not Found']]}
       end.to_app }
@@ -115,7 +116,7 @@ describe OmniAuth::Strategies::Citadele do
 
     context 'with non-existant private certificate file' do
       let(:app){ Rack::Builder.new do |b|
-        b.use Rack::Session::Cookie, {secret: 'abc123'}
+        b.use Rack::Session::Cookie, {secret: '5242e6bd9daf0e9645c2d4e22b11ba8cee0bed44439906d5f1bd5dad409d8637'}
         b.use(OmniAuth::Strategies::Citadele, PRIVATE_KEY, 'missing-private-crt-file.pem', PUBLIC_CRT, 'MY_FROM')
         b.run lambda{|env| [404, {}, ['Not Found']]}
       end.to_app }
@@ -161,7 +162,7 @@ describe OmniAuth::Strategies::Citadele do
 
     context 'with non-existant public key file' do
       let(:app){ Rack::Builder.new do |b|
-        b.use Rack::Session::Cookie, {secret: 'abc123'}
+        b.use Rack::Session::Cookie, {secret: '5242e6bd9daf0e9645c2d4e22b11ba8cee0bed44439906d5f1bd5dad409d8637'}
         b.use(OmniAuth::Strategies::Citadele, PRIVATE_KEY, PRIVATE_CRT, 'missing-public-key-file.pem' )
         b.run lambda{|env| [404, {}, ['Not Found']]}
       end.to_app }
